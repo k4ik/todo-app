@@ -1,7 +1,10 @@
 <template>
   <main>
     <div class="container">
-      <input type="text" placeholder="Insert task here..." v-model="newTask" @submit="addTask"/>
+      <form @submit.prevent="addTask">
+        <input type="text" placeholder="Insert task here..." v-model="newTask" />
+        <button type="submit">Add Task</button>
+      </form>
       <div class="row"></div>
       <div class="container-content" v-for="task in tasks" :key="task.id">
         <div class="task-container">
@@ -43,17 +46,29 @@ export default {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ task: this.newTask }),
-      }).then(() => {
-        this.fetchTasks();
-        this.newTask = "";
-      });
+      })
+        .then(() => {
+          this.fetchTasks();
+          this.newTask = "";
+        })
+        .catch((error) => {
+          console.error("Error adding task:", error);
+        });
     },
     deleteTask(id) {
-      fetch(`http://localhost:8000/tasks.php?id=${id}`, {
-        method: "DELETE",
-      }).then(() => {
-        this.fetchTasks();
-      });
+        fetch(`http://localhost:8000/tasks.php?id=${id}`, {
+            method: "DELETE"
+        })
+        .then(response => {
+            if (response.ok) {
+                this.fetchTasks();
+            } else {
+                throw new Error("Failed to delete task");
+            }
+        })
+        .catch(error => {
+            console.error("Error deleting task:", error);
+        });
     },
   },
 };
