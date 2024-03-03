@@ -7,10 +7,10 @@
       <div class="row"></div>
       <div class="container-content" v-for="task in tasks" :key="task.id">
         <div class="task-container">
-          <input type="checkbox" />
-          <span class="task">{{ task.task }}</span>
+          <input type="checkbox" v-model="task.completed" />
+          <span class="task" :class="{ completed: task.completed }">{{ task.task }}</span>
           <button class="delete-button" @click="deleteTask(task.id)">
-            <img src="../assets/images/trash.png" alt="" />
+            <img src="../assets/images/trash.png" alt="trash icon" />
           </button>
         </div>
         <div class="row"></div>
@@ -35,7 +35,7 @@ export default {
       fetch("http://localhost:8000/tasks.php")
         .then((response) => response.json())
         .then((data) => {
-          this.tasks = data;
+          this.tasks = data.map(task => ({ ...task, completed: false }));
         });
     },
     addTask() {
@@ -73,7 +73,6 @@ export default {
           console.error("Error deleting task:", error);
         });
     },
-
   },
 };
 </script>
@@ -148,5 +147,10 @@ input[type="checkbox"] {
 
 .delete-button img:hover {
   opacity: 1;
+}
+
+.completed {
+  text-decoration: line-through;
+  color: grey;
 }
 </style>
