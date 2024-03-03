@@ -17,9 +17,7 @@ switch($method) {
                 $tasks[] = $row;
             }
             echo json_encode($tasks);
-        } else {
-            echo json_encode(array("message" => "No tasks found"));
-        }
+        } 
         break;
     case 'POST':
         $data = json_decode(file_get_contents('php://input'), true);
@@ -39,11 +37,11 @@ switch($method) {
         break;
     case 'DELETE':
         $data = json_decode(file_get_contents('php://input'), true);
-
+    
         if (isset($data['id'])) {
             $id = $data['id'];
             $sql = "DELETE FROM tasks WHERE id = $id";
-
+    
             if ($conn->query($sql) === TRUE) {
                 echo json_encode(array("message" => "Task deleted successfully"));
             } else {

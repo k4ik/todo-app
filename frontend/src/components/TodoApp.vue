@@ -3,7 +3,6 @@
     <div class="container">
       <form @submit.prevent="addTask">
         <input type="text" placeholder="Insert task here..." v-model="newTask" />
-        <button type="submit">Add Task</button>
       </form>
       <div class="row"></div>
       <div class="container-content" v-for="task in tasks" :key="task.id">
@@ -56,20 +55,25 @@ export default {
         });
     },
     deleteTask(id) {
-        fetch(`http://localhost:8000/tasks.php?id=${id}`, {
-            method: "DELETE"
-        })
+      fetch(`http://localhost:8000/tasks.php`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id: id }),
+      })
         .then(response => {
-            if (response.ok) {
-                this.fetchTasks();
-            } else {
-                throw new Error("Failed to delete task");
-            }
+          if (response.ok) {
+            this.fetchTasks();
+          } else {
+            throw new Error("Failed to delete task");
+          }
         })
         .catch(error => {
-            console.error("Error deleting task:", error);
+          console.error("Error deleting task:", error);
         });
     },
+
   },
 };
 </script>
@@ -81,9 +85,9 @@ main {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
   background-color: $bg-color;
   font-family: Arial, sans-serif;
+  height: 100vh;
 }
 
 .container {
